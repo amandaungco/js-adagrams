@@ -51,55 +51,67 @@ const Adagrams = {
       return totalScore
     }
     else {
-      word.split('').forEach(letter =>
-        totalScore += this.scoreLetters[letter]
+      word.toUpperCase().split('').forEach(letter =>
+        totalScore += Adagrams.scoreLetters[letter]
       );
-      if (word.length >=7 && word.length <11){
+      if (word.length >= 7 && word.length < 11){
         totalScore += 8
       }
     }
+
+    console.log([word, totalScore])
     return totalScore
   },
 
   highestScoreFrom(words) {
     const wordsToScores = []
-    for (let i = 0; i < words.length; i++){
-      words.forEach(word => wordsToScores[i] =
-        {
-          playedWord: word,
-          score: this.scoreWord(word)
-        }
-      );
-    }
-
-    wordsToScores.sort(function(a,b){
-      return b.score - a.score;
-    });
-    let topScore = wordsToScores[0]['score']
-    let winningWords = []
-    let winner = undefined
-
-    wordsToScores.forEach(wordScore => {
-      if (wordScore['score'] == topScore){
-        winningWords.push(wordScore)
+    words.forEach(word => {
+      let wordScore= {
+        word: word,
+        score: Adagrams.scoreWord(word)
       }
-    });
-    if (winningWords.length > 1) {
-      winningWords.forEach(wordScore => {
-        if (wordScore.playedWord.length == 10) {
-          winner = wordScore
-        }
-      })
+      wordsToScores.push(wordScore)
     }
-    else {
+  );
+
+  wordsToScores.sort(function(a,b){
+    return b.score - a.score;
+  });
+
+  let topScore = wordsToScores[0]['score']
+  let winningWords = []
+  let winner = undefined
+
+  wordsToScores.forEach(wordScore => {
+    if (wordScore['score'] == topScore){
+      winningWords.push(wordScore)
+    }
+  });
+
+  if (winningWords.length > 1) {
+    winningWords.forEach(wordScore => {
+      if (wordScore.word.length == 10 && winner == undefined ) {
+        winner = wordScore
+        return winner
+      }
+    })
+
+    if (winner == undefined){
       winningWords.sort(function(a,b){
-        return b.playedWord.length - a.playedWord.length
+        return a.word.length - b.word.length
       })
       winner = winningWords[0]
     }
-    return winner
-
   }
+  else {
+    winner = wordsToScores[0]
+  }
+
+  // console.log(winner)
+  return winner
+
+}
+
 
 };
 //sort words in hash by score
